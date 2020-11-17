@@ -48,6 +48,68 @@ private:
   bool ATTRIBUTE = DEFAULT;
 #include "RISCVGenSubtargetInfo.inc"
 
+  bool HasStdExtM = false;
+  bool HasStdExtA = false;
+  bool HasStdExtF = false;
+  bool HasStdExtD = false;
+  bool HasStdExtC = false;
+  bool HasStdExtZihintpause = false;
+  bool HasStdExtZihintntl = false;
+  bool HasStdExtZba = false;
+  bool HasStdExtZbb = false;
+  bool HasStdExtZbc = false;
+  bool HasStdExtZbs = false;
+  bool HasStdExtZca = false;
+  bool HasStdExtV = false;
+  bool HasStdExtZve32x = false;
+  bool HasStdExtZve32f = false;
+  bool HasStdExtZve64x = false;
+  bool HasStdExtZve64f = false;
+  bool HasStdExtZve64d = false;
+  bool HasStdExtZvfh = false;
+  bool HasStdExtZfhmin = false;
+  bool HasStdExtZfh = false;
+  bool HasStdExtZfinx = false;
+  bool HasStdExtZdinx = false;
+  bool HasStdExtZhinxmin = false;
+  bool HasStdExtZhinx = false;
+  bool HasStdExtZbkb = false;
+  bool HasStdExtZbkc = false;
+  bool HasStdExtZbkx = false;
+  bool HasStdExtZknd = false;
+  bool HasStdExtZkne = false;
+  bool HasStdExtZknh = false;
+  bool HasStdExtZksed = false;
+  bool HasStdExtZksh = false;
+  bool HasStdExtZkr = false;
+  bool HasStdExtZkn = false;
+  bool HasStdExtZks = false;
+  bool HasStdExtZkt = false;
+  bool HasStdExtZk = false;
+  bool HasStdExtZicbom = false;
+  bool HasStdExtZicboz = false;
+  bool HasStdExtZicbop = false;
+  bool HasStdExtSvnapot = false;
+  bool HasStdExtZmmul = false;
+  bool HasStdExtZawrs = false;
+  bool HasStdExtZtso = false;
+  bool HasStdExtZbt = false;
+  bool HasStdExtZbproposedc = false;
+  bool HasRV32 = false;
+  bool HasStdExtZvlsseg = false;
+  bool HasStdExtZvamo = false;
+  bool HasExtXCoreV = false;
+  bool HasExtXCoreVHwlp = false;
+  bool HasRV64 = false;
+  bool IsRV32E = false;
+  bool EnableLinkerRelax = false;
+  bool EnableRVCHintInstrs = true;
+  bool EnableDefaultUnroll = true;
+  bool EnableSaveRestore = false;
+  bool EnableUnalignedScalarMem = false;
+  bool HasShortForwardBranchOpt = false;
+  bool HasLUIADDIFusion = false;
+  bool HasForcedAtomics = false;
   unsigned XLen = 32;
   unsigned ZvlLen = 0;
   MVT XLenVT = MVT::i32;
@@ -108,6 +170,35 @@ public:
   bool hasStdExtCOrZca() const { return HasStdExtC || HasStdExtZca; }
   bool hasStdExtZvl() const { return ZvlLen != 0; }
   bool hasStdExtZfhOrZfhmin() const { return HasStdExtZfh || HasStdExtZfhmin; }
+  bool hasStdExtZvfh() const { return HasStdExtZvfh; }
+  bool hasStdExtZfhmin() const { return HasStdExtZfhmin; }
+  bool hasStdExtZfh() const { return HasStdExtZfh; }
+  bool hasStdExtZfinx() const { return HasStdExtZfinx; }
+  bool hasStdExtZdinx() const { return HasStdExtZdinx; }
+  bool hasStdExtZhinxmin() const { return HasStdExtZhinxmin; }
+  bool hasStdExtZhinx() const { return HasStdExtZhinx; }
+  bool hasStdExtZbkb() const { return HasStdExtZbkb; }
+  bool hasStdExtZbkc() const { return HasStdExtZbkc; }
+  bool hasStdExtZbkx() const { return HasStdExtZbkx; }
+  bool hasStdExtZknd() const { return HasStdExtZknd; }
+  bool hasStdExtZkne() const { return HasStdExtZkne; }
+  bool hasStdExtZknh() const { return HasStdExtZknh; }
+  bool hasStdExtZksed() const { return HasStdExtZksed; }
+  bool hasStdExtZksh() const { return HasStdExtZksh; }
+  bool hasStdExtZkr() const { return HasStdExtZkr; }
+  bool hasStdExtZicbom() const { return HasStdExtZicbom; }
+  bool hasStdExtZicboz() const { return HasStdExtZicboz; }
+  bool hasStdExtZicbop() const { return HasStdExtZicbop; }
+  bool hasStdExtSvnapot() const { return HasStdExtSvnapot; }
+  bool hasStdExtZawrs() const { return HasStdExtZawrs; }
+  bool hasStdExtZmmul() const { return HasStdExtZmmul; }
+  bool hasStdExtZtso() const { return HasStdExtZtso; }
+  bool hasStdExtZbt() const { return HasStdExtZbt; }
+  bool hasStdExtZbproposedc() const { return HasStdExtZbproposedc; }
+  bool hasStdExtZvlsseg() const { return HasStdExtZvlsseg; }
+  bool hasStdExtZvamo() const { return HasStdExtZvamo; }
+  bool hasExtXCoreV() const { return HasExtXCoreV; }
+  bool hasExtXCoreVHwlp() const { return HasExtXCoreVHwlp; }
   bool is64Bit() const { return HasRV64; }
   MVT getXLenVT() const { return XLenVT; }
   unsigned getXLen() const { return XLen; }
