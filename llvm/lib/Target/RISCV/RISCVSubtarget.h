@@ -101,6 +101,7 @@ private:
   bool HasExtXCoreV = false;
   bool HasExtXCoreVHwlp = false;
   bool HasExtXCoreVMac = false;
+  bool HasExtXCoreVAlu = false;
   bool HasRV64 = false;
   bool IsRV32E = false;
   bool EnableLinkerRelax = false;
@@ -201,6 +202,7 @@ public:
   bool hasExtXCoreV() const { return HasExtXCoreV; }
   bool hasExtXCoreVHwlp() const { return HasExtXCoreVHwlp; }
   bool hasExtXCoreVMac() const { return HasExtXCoreVMac; }
+  bool hasExtXCoreVAlu() const { return HasExtXCoreVAlu; }
   bool is64Bit() const { return HasRV64; }
   MVT getXLenVT() const { return XLenVT; }
   unsigned getXLen() const { return XLen; }
