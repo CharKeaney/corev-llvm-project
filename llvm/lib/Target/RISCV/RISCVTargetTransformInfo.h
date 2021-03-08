@@ -327,6 +327,8 @@ public:
 
   bool isLSRCostLess(const TargetTransformInfo::LSRCost &C1,
                      const TargetTransformInfo::LSRCost &C2);
+  
+  bool shouldFavorPostInc() const;
 };
 
 } // end namespace llvm
