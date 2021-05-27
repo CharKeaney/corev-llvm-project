@@ -16,6 +16,7 @@
 #include "RISCVMachineFunctionInfo.h"
 #include "RISCVSubtarget.h"
 #include "RISCVTargetMachine.h"
+#include "RISCVMachineFunctionInfo.h"
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/Analysis/MemoryLocation.h"
@@ -733,6 +734,8 @@ static RISCVCC::CondCode getCondFromBranchOpc(unsigned Opc) {
   switch (Opc) {
   default:
     return RISCVCC::COND_INVALID;
+  case RISCV::HwlpBranch:
+    return RISCVCC::COND_HWLP;
   case RISCV::BEQ:
     return RISCVCC::COND_EQ;
   case RISCV::BNE:
@@ -767,6 +770,8 @@ const MCInstrDesc &RISCVInstrInfo::getBrCond(RISCVCC::CondCode CC) const {
   switch (CC) {
   default:
     llvm_unreachable("Unknown condition code!");
+  case RISCVCC::COND_HWLP:
+    return get(RISCV::HwlpBranch);
   case RISCVCC::COND_EQ:
     return get(RISCV::BEQ);
   case RISCVCC::COND_NE:
@@ -786,6 +791,8 @@ RISCVCC::CondCode RISCVCC::getOppositeBranchCondition(RISCVCC::CondCode CC) {
   switch (CC) {
   default:
     llvm_unreachable("Unrecognized conditional branch");
+  case RISCVCC::COND_HWLP:
+    llvm_unreachable("No reversible hwlp branch");
   case RISCVCC::COND_EQ:
     return RISCVCC::COND_NE;
   case RISCVCC::COND_NE:
@@ -809,10 +816,13 @@ bool RISCVInstrInfo::analyzeBranch(MachineBasicBlock &MBB,
   TBB = FBB = nullptr;
   Cond.clear();
 
+  auto *RVFI = MBB.getParent()->getInfo<RISCVMachineFunctionInfo>();
+
   // If the block has no terminators, it just falls into the block after it.
+  // If the next block is part of a hardware loop, this block must fall through.
   MachineBasicBlock::iterator I = MBB.getLastNonDebugInstr();
   if (I == MBB.end() || !isUnpredicatedTerminator(*I))
-    return false;
+    return RVFI->isHwlpBasicBlock(MBB.getNextNode());
 
   // Count the number of terminators and find the first unconditional or
   // indirect branch.
@@ -1007,6 +1017,9 @@ void RISCVInstrInfo::insertIndirectBranch(MachineBasicBlock &MBB,
 
 bool RISCVInstrInfo::reverseBranchCondition(
     SmallVectorImpl<MachineOperand> &Cond) const {
+  if (Cond[0].getImm() == RISCVCC::COND_HWLP)
+    return true;
+
   assert((Cond.size() == 3) && "Invalid branch condition!");
   auto CC = static_cast<RISCVCC::CondCode>(Cond[0].getImm());
   Cond[0].setImm(getOppositeBranchCondition(CC));
@@ -1044,6 +1057,8 @@ bool RISCVInstrInfo::isBranchOffsetInRange(unsigned BranchOp,
     return isIntN(21, BrOffset);
   case RISCV::PseudoJump:
     return isIntN(32, SignExtend64(BrOffset + 0x800, XLen));
+  case RISCV::HwlpBranch:
+    return true;
   }
 }
 

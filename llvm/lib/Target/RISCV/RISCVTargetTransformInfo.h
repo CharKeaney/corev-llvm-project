@@ -329,6 +329,12 @@ public:
                      const TargetTransformInfo::LSRCost &C2);
   
   bool shouldFavorPostInc() const;
+  bool isHardwareLoopProfitable(Loop *L, ScalarEvolution &SE,
+                                AssumptionCache &AC,
+                                TargetLibraryInfo *LibInfo,
+                                HardwareLoopInfo &HWLoopInfo);
+
+  bool isLoweredToCall(const Function *F);
 };
 
 } // end namespace llvm

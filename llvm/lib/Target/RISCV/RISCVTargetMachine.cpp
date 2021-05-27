@@ -81,6 +81,8 @@ extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeRISCVTarget() {
   initializeRISCVExpandPseudoPass(*PR);
   initializeRISCVInsertVSETVLIPass(*PR);
   initializeRISCVDAGToDAGISelPass(*PR);
+  initializeRISCVCoreVHwlpBlocksPass(*PR);
+  initializeRISCVExpandCoreVHwlpPseudoPass(*PR);
 }
 
 static StringRef computeDataLayout(const Triple &TT) {
@@ -285,6 +287,7 @@ bool RISCVPassConfig::addPreISel() {
     // deleted block address after enabling default outlining. See D99707 for
     // more details.
     addPass(createBarrierNoopPass());
+    addPass(createHardwareLoopsPass());
   }
 
   if (EnableGlobalMerge == cl::BOU_TRUE) {
@@ -335,6 +338,9 @@ void RISCVPassConfig::addPreEmitPass2() {
   // possibility for other passes to break the requirements for forward
   // progress in the LR/SC block.
   addPass(createRISCVExpandAtomicPseudoPass());
+  if (TM->getOptLevel() != CodeGenOpt::None) {
+    addPass(createRISCVExpandCoreVHwlpPseudoPass());
+  }
 }
 
 void RISCVPassConfig::addMachineSSAOptimization() {
@@ -353,6 +359,7 @@ void RISCVPassConfig::addPreRegAlloc() {
   if (TM->getOptLevel() != CodeGenOpt::None)
     addPass(createRISCVMergeBaseOffsetOptPass());
   addPass(createRISCVInsertVSETVLIPass());
+  addPass(createRISCVCoreVHwlpBlocksPass());
 }
 
 void RISCVPassConfig::addPostRegAlloc() {
