@@ -292,6 +292,48 @@ def HasStdExtCOrZca
                                    "'Zca' (part of the C extension, excluding "
                                    "compressed floating point loads/stores)">;
 
+def FeatureExtZbt
+    : SubtargetFeature<"experimental-zbt", "HasStdExtZbt", "true",
+                       "'Zbt' (Ternary 'B' Instructions)">;
+def HasStdExtZbt : Predicate<"Subtarget->hasStdExtZbt()">,
+                             AssemblerPredicate<(all_of FeatureExtZbt),
+                             "'Zbt' (Ternary 'B' Instructions)">;
+
+// Some instructions belong to both the basic and the permutation
+// subextensions. They should be enabled if either has been specified.
+def HasStdExtZbbOrZbp
+    : Predicate<"Subtarget->hasStdExtZbb() || Subtarget->hasStdExtZbp()">,
+                AssemblerPredicate<(any_of FeatureExtZbb, FeatureExtZbp)>;
+
+def FeatureExtZbproposedc
+    : SubtargetFeature<"experimental-zbproposedc", "HasStdExtZbproposedc", "true",
+                       "'Zbproposedc' (Proposed Compressed 'B' Instructions)">;
+def HasStdExtZbproposedc : Predicate<"Subtarget->hasStdExtZbproposedc()">,
+                           AssemblerPredicate<(all_of FeatureExtZbproposedc),
+                           "'Zbproposedc' (Proposed Compressed 'B' Instructions)">;
+
+def FeatureStdExtB
+    : SubtargetFeature<"experimental-b", "HasStdExtB", "true",
+                       "'B' (Bit Manipulation Instructions)",
+                       [FeatureExtZbb,
+                        FeatureExtZbc,
+                        FeatureExtZbe,
+                        FeatureExtZbf,
+                        FeatureExtZbm,
+                        FeatureExtZbp,
+                        FeatureExtZbr,
+                        FeatureExtZbs,
+                        FeatureExtZbt]>;
+def HasStdExtB : Predicate<"Subtarget->hasStdExtB()">,
+                           AssemblerPredicate<(all_of FeatureStdExtB),
+                           "'B' (Bit Manipulation Instructions)">;
+def FeatureStdExtZce
+    : SubtargetFeature<"experimental-zce", "HasStdExtZce", "true",
+                       "'Zce' (code-size reduction extension proposal v0.31)">;
+def HasStdExtZce : Predicate<"Subtarget->hasStdExtZce()">,
+                           AssemblerPredicate<(all_of FeatureStdExtZce),
+                           "'Zce' (code-size reduction extension proposal v0.31)">;
+
 def FeatureNoRVCHints
     : SubtargetFeature<"no-rvc-hints", "EnableRVCHintInstrs", "false",
                        "Disable RVC Hint Instructions.">;

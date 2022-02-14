@@ -92,6 +92,8 @@ private:
   bool HasStdExtZbt = false;
   bool HasStdExtZbproposedc = false;
   bool HasRV32 = false;
+  bool HasStdExtZce = false;
+  bool HasStdExtV = false;
   bool HasStdExtZvlsseg = false;
   bool HasStdExtZvamo = false;
   bool HasExtXCoreV = false;
@@ -198,6 +200,8 @@ public:
   bool hasStdExtZtso() const { return HasStdExtZtso; }
   bool hasStdExtZbt() const { return HasStdExtZbt; }
   bool hasStdExtZbproposedc() const { return HasStdExtZbproposedc; }
+  bool hasStdExtZce() const { return HasStdExtZce; }
+  bool hasStdExtV() const { return HasStdExtV; }
   bool hasStdExtZvlsseg() const { return HasStdExtZvlsseg; }
   bool hasStdExtZvamo() const { return HasStdExtZvamo; }
   bool hasExtXCoreV() const { return HasExtXCoreV; }

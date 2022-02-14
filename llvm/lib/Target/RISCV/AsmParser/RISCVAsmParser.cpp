@@ -568,6 +568,7 @@ public:
 
   bool isUImm2() { return IsUImm<2>(); }
   bool isUImm3() { return IsUImm<3>(); }
+  bool isUImm4() { return IsUImm<4>(); }
   bool isUImm5() { return IsUImm<5>(); }
   bool isUImm7() { return IsUImm<7>(); }
   bool isUImm12() const { return IsUImm<12>();}
@@ -655,6 +656,16 @@ public:
     bool IsConstantImm = evaluateConstantImm(getImm(), Imm, VK);
     return IsConstantImm && (Imm != 0) &&
            (isUInt<5>(Imm) || (Imm >= 0xfffe0 && Imm <= 0xfffff)) &&
+           VK == RISCVMCExpr::VK_RISCV_None;
+  }
+
+  bool isUImm5Lsb0() const {
+    if (!isImm())
+      return false;
+    int64_t Imm;
+    RISCVMCExpr::VariantKind VK = RISCVMCExpr::VK_RISCV_None;
+    bool IsConstantImm = evaluateConstantImm(getImm(), Imm, VK);
+    return IsConstantImm && isShiftedUInt<4, 1>(Imm) &&
            VK == RISCVMCExpr::VK_RISCV_None;
   }
 
