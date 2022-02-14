@@ -258,6 +258,15 @@ static DecodeStatus decodeVMaskReg(MCInst &Inst, uint64_t RegNo,
   return MCDisassembler::Success;
 }
 
+// Add implied GP operand for instructions *GP zce instructions. The GP
+// operand isn't explicitly encoded in the instruction.
+static void addImplyGP(MCInst &Inst, int64_t Address, const void *Decoder) {
+  if (Inst.getOpcode() == RISCV::LWGP || Inst.getOpcode() == RISCV::SWGP ||
+      Inst.getOpcode() == RISCV::LDGP || Inst.getOpcode() == RISCV::SDGP) {
+    DecodeGPRRegisterClass(Inst, 3, Address, Decoder);
+  }
+}
+
 // Add implied SP operand for instructions *SP compressed instructions. The SP
 // operand isn't explicitly encoded in the instruction.
 static void addImplySP(MCInst &Inst, int64_t Address,
@@ -282,6 +291,7 @@ static DecodeStatus decodeUImmOperand(MCInst &Inst, uint64_t Imm,
                                       int64_t Address,
                                       const MCDisassembler *Decoder) {
   assert(isUInt<N>(Imm) && "Invalid immediate");
+  addImplyGP(Inst, Address, Decoder);
   addImplySP(Inst, Address, Decoder);
   Inst.addOperand(MCOperand::createImm(Imm));
   return MCDisassembler::Success;
